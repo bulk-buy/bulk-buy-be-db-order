@@ -166,7 +166,9 @@ describeGitHubActions("database CRUD operations", () => {
   });
 
   const inputEntity = {
-    name: "entityName",
+    listingId: "111111111111111111111111",
+    userId: "111111111111111111111111",
+    item: [],
   };
   let initialRecords;
   let createdEntity;
@@ -201,7 +203,7 @@ describeGitHubActions("database CRUD operations", () => {
           if (err) done(err);
           else {
             // explicit keys
-            assert.ok("name" in res.body, "should have name");
+            assert.ok("listingId" in res.body, "should have listingId");
 
             // implicit keys
             assert.ok("_id" in res.body, "should have _id");
@@ -409,7 +411,7 @@ describeGitHubActions("database CRUD operations", () => {
       it("should return 400", (done) => {
         request(app.server)
           .patch(`/${config.dbTableName}/${createdEntity._id}`)
-          .send({ _id: `${createdEntity._id}`, name: "newName1" })
+          .send({ _id: `${createdEntity._id}`, listingId: "newName1" })
           .expect(400, done);
       });
     });
@@ -418,7 +420,11 @@ describeGitHubActions("database CRUD operations", () => {
       it("should return 404", (done) => {
         request(app.server)
           .patch(`/${config.dbTableName}/111111111111111111111111`)
-          .send({ _id: "111111111111111111111111", __v: 0, name: "newName" })
+          .send({
+            _id: "111111111111111111111111",
+            __v: 0,
+            listingId: "newName",
+          })
           .expect(404, done);
       });
     });
@@ -430,14 +436,17 @@ describeGitHubActions("database CRUD operations", () => {
           .send({
             _id: `${createdEntity._id}`,
             __v: createdEntity.__v,
-            name: "newName1",
+            listingId: "newName1",
           })
           .expect(200)
           .end((err, res) => {
             if (err) done(err);
             else {
               // explicit keys
-              assert.ok(res.body.name === "newName1", "should update name");
+              assert.ok(
+                res.body.listingId === "newName1",
+                "should update listingId"
+              );
 
               // implicit keys
               assert.equal(
@@ -457,7 +466,7 @@ describeGitHubActions("database CRUD operations", () => {
       it("should conflict", (done) => {
         request(app.server)
           .patch(`/${config.dbTableName}/${createdEntity._id}`)
-          .send({ _id: `${createdEntity._id}`, __v: 0, name: "newName2" })
+          .send({ _id: `${createdEntity._id}`, __v: 0, listingId: "newName2" })
           .expect(409, done);
       });
     });

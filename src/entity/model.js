@@ -20,11 +20,19 @@ const options = {
   validator: {
     $jsonSchema: {
       bsonType: "object",
-      required: ["name"],
+      required: ["listingId", "userId", "item"],
       properties: {
-        name: {
+        listingId: {
           bsonType: "string",
           description: "is required, must be a string",
+        },
+        userId: {
+          bsonType: "string",
+          description: "is required, must be a string",
+        },
+        item: {
+          bsonType: "array",
+          description: "is required, must be a array",
         },
         deletedAt: {
           bsonType: "date",
@@ -41,7 +49,7 @@ mongoose.connection.on("open", () => {
   mongoose.connection.db
     .createCollection(config.dbTableName, options)
     .then((collection) => {
-      collection.createIndex({ name: 1 });
+      collection.createIndex({ listingId: 1 });
       collection.createIndex({ deletedAt: 1 });
     })
     .catch((err) => {
@@ -61,8 +69,16 @@ mongoose.connection.on("open", () => {
 // mongoose schema
 const schema = new mongoose.Schema(
   {
-    name: {
+    listingId: {
       type: String,
+      required: true,
+    },
+    userId: {
+      type: String,
+      required: true,
+    },
+    item: {
+      type: Array,
       required: true,
     },
     deletedAt: {
